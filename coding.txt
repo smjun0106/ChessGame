@@ -1,0 +1,33 @@
+size_board = 8
+board = [] 
+count = 0
+
+for row in range(size_board):
+    column = []
+    for col in range(size_board):
+        column.append(count)    
+        # count+=1
+    board.append(column)
+
+# print(board)
+
+# dictonary 
+pieces = {1: 'black_pawn1', 2: 'black_pawn2', 3: 'black_pawn3'} 
+locations = {1: (4,5), 2: (0,1), 3: (5,5)} 
+# print(locations[2][0], locations[2][1])
+
+for p, v in pieces.items(): 
+    board[locations[p][0]][locations[p][1]] = pieces[p]
+
+# board[0][1] = pieces[2]
+# print(board)
+# row = input('row = ')
+# col = input('col = ')
+# print(row, col)
+
+# board[int(row)][int(col)] = pieces[1]
+# pieces[1] = 0
+
+
+
+print(board)
