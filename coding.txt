@@ -1,3 +1,5 @@
+# Homework: create the pawn rule (check our pieces and enemy pieces, then move)
+
 size_board = 8
 board = [] 
 count = '[]'
@@ -8,7 +10,7 @@ for row in range(size_board):
         column.append(count)    
         # count+=1
     board.append(column)
-
+ 
 # dictionary 
 pieces = {
     1: '♙', 2: '♙', 3: '♙', 4:'♙', 5: '♙', 6: '♙', 7: '♙', 8: '♙',
@@ -32,7 +34,6 @@ seleced_piece = 10
  
 def remove_piece(piece):
     board[locations[piece][0]][locations[piece][1]] = '[]'
-    print(board[locations[piece][0]][locations[piece][1]], locations[piece])
 
 def check_for_killed_piece(row, col):
     killed_id = is_piece(row, col)
@@ -66,24 +67,42 @@ def print_killed_pieces():
     # line = ['-' for i in range(line_size)]
     # print(''.join(line))
     
+    killed_list = []
     for p, v in pieces.items():
         if alive_pieces[p] != True:
-            print([v])
+           killed_list.append(v) 
+                    
+    print(killed_list)
            
     
 # Print board
 print_board()
-
-print(locations[seleced_piece][0], locations[seleced_piece][1])
  
-def is_valid_move(row, col):
+def is_valid_move_knight(row, col):
     for i in range(-2,3):
-        for j in range(-2,3):
-            # abs(1) == abs(-1) => 1 != 1
+        for j in range(-2,3): 
              if i != 0 and j != 0 and abs(i) != abs(j):
                 if row == locations[seleced_piece][0] + i and col == locations[seleced_piece][1] + j:
                     return True
     return False
+ 
+def is_valid_move_pawn(row, col):
+    
+    row_0 = locations[seleced_piece][0] -1
+    col_0 = locations[seleced_piece][1] +1
+    
+    
+    if locations[seleced_piece][0] == 6:
+        if (row == locations[seleced_piece][0] - 1 and col == locations[seleced_piece][1]) or (row == locations[seleced_piece][0] - 2 and col == locations[seleced_piece][1]):
+                        return True
+
+    else:   
+        if (row == locations[seleced_piece][0] - 1 and col == locations[seleced_piece][1]):
+                        return True
+        
+    
+    return False
+ 
  
 def is_piece(row, col):
     for id, value in locations.items():
@@ -93,10 +112,13 @@ def is_piece(row, col):
     return False    
   
 def repeat_code():
+    global seleced_piece
+    
+    seleced_piece = int(input('choose piece = '))
     row = int(input('row = '))
     col = int(input('col = '))
 
-    if is_valid_move(row, col):
+    if is_valid_move_pawn(row, col):
         if check_for_killed_piece(row, col):
             print('Piece killed!')
         remove_piece(seleced_piece)
