@@ -151,6 +151,8 @@ repeat_code()
 
 ----------------------------------------------------------------------------
 
+(still need help with writing the rule)
+
 size_board = 8
 board = [] 
 count = '[]'
