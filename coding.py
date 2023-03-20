@@ -216,3 +216,34 @@ def repeat_code():
         repeat_code()
 
 repeat_code()
+
+------------------------------------------------------------------------
+def is_valid_move_rook(row, col):
+    current_row, current_col = locations[seleced_piece]
+    
+    # Check if the move is vertical or horizontal
+    if row == current_row or col == current_col:
+        
+        # Check if there are any pieces blocking the way
+        if row == current_row:
+            direction = 1 if col > current_col else -1
+            for c in range(current_col + direction, col, direction):
+                if is_piece(row, c):
+                    return False
+        else:
+            direction = 1 if row > current_row else -1
+            for r in range(current_row + direction, row, direction):
+                if is_piece(r, col):
+                    return False
+                    
+        # Check if there is a piece at the destination, if yes check if it is an opponent's piece
+        if is_piece(row, col):
+            piece_type = piece_category[is_piece(row, col)]
+            if piece_type == 1 and locations[is_piece(row, col)][0] != current_row:
+                return False
+            elif piece_type != 1:
+                return False
+                
+        return True
+    
+    return False
