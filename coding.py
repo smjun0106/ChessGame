@@ -1,4 +1,5 @@
-# Homework: Queen and rook
+# Homework: Fix the pawn bug
+
 size_board = 8
 board = [] 
 count = ' '
@@ -32,7 +33,7 @@ alive_pieces = {key: True for key in range(1, 33)}
 locations = {
     1: (6,0), 2: (6,1), 3: (6,2), 4: (6,3), 5: (6,4), 6: (6,5), 7: (6,6), 8: (6,7),
     9: (7,0), 10: (7,1), 11: (7,2), 12: (7,3), 13: (7,4), 14: (7,5), 15: (7,6), 16: (7,7),
-    17: (1,0), 18: (1,1), 19: (1,2), 20: (1,3), 21: (1,4), 22: (1,5), 23: (1,6), 24: (1,7),
+    17: (5,1), 18: (1,1), 19: (1,2), 20: (1,3), 21: (1,4), 22: (1,5), 23: (1,6), 24: (1,7),
     25: (0,0), 26: (0,1), 27: (0,2), 28: (0,3), 29: (0,4), 30: (0,5), 31: (0,6), 32: (0,7),
 } 
  
@@ -97,27 +98,25 @@ def is_valid_move_knight(row, col):
                 if row == locations[seleced_piece][0] + i and col == locations[seleced_piece][1] + j:
                     return True
     return False
-
-def check_enemy(row, col):
-    if row == locations[seleced_piece][0] - 1 and (col == locations[seleced_piece][1] + 1 or col == locations[seleced_piece][1] - 1):
-        
-        # check for enemy piece
-        killed_id = is_piece(row, col)
-        if killed_id and killed_id not in range(1, 17):
-            remove_piece(killed_id)
-            alive_pieces[killed_id] = False 
-            return True
+  
 
 def is_valid_move_pawn(row, col):    
     if locations[seleced_piece][0] == 6:
-        if (row == locations[seleced_piece][0] - 1 and col == locations[seleced_piece][1]) or (row == locations[seleced_piece][0] - 2 and col == locations[seleced_piece][1]):
-            return True
-    else:   
-        if row == locations[seleced_piece][0] - 1 and col == locations[seleced_piece][1]:
-            return True
-        
-    return check_enemy(row, col)
-
+        if (row == locations[seleced_piece][0] - 1 and col == locations[seleced_piece][1]) \
+            or (row == locations[seleced_piece][0] - 2 and col == locations[seleced_piece][1]):
+            return not check_same_team(seleced_piece, is_piece(row, col))
+    elif row == locations[seleced_piece][0] - 1 and col == locations[seleced_piece][1]:
+            return not check_same_team(seleced_piece, is_piece(row, col))
+    
+    if (row == locations[seleced_piece][0] - 1 and col == locations[seleced_piece][1] + 1) or \
+        (row == locations[seleced_piece][0] - 1 and col == locations[seleced_piece][1] - 1):
+        if is_piece(row, col):
+            return not check_same_team(seleced_piece, is_piece(row, col))
+        else:
+            return False  # destination is empty
+ 
+    return False 
+    
 def check_same_team(id1, id2):
     if id1 in range(1, 17) and id2 in range(1, 17):
         return True
@@ -149,7 +148,38 @@ def is_valid_move_bishop(row, col):
     else:
         return True  # destination is empty
 
+# def is_valid_move_rook(row, col):
+#     current_row, current_col = locations[seleced_piece]
+#     # check if move is backward, forward, and side  
+#     if row != current_row and col != current_col:
+#         return False 
+
+#     # vertical = False or horizontal = True
+#     direction = False if row != current_row else True
+
+#     # check if path is clear
+#     if direction: # horizontal movement
+#         row_step = 1 if row > current_row else -1
+#         i = current_row + row_step
+#         while i != row:
+#             if is_piece(i, col):
+#                 return False  # path is not clear
+#             i += row_step   
+#     else: # vertical movement 
+#         col_step = 1 if col > current_col else -1
+#         j = current_col + col_step
+#         while j != col:
+#             if is_piece(row, j):
+#                 return False  # path is not clear
+#             j += col_step    
  
+#     # check if destination is empty or occupied by an enemy piece
+#     if is_piece(row, col):
+#         return not check_same_team(seleced_piece, is_piece(row, col))
+#     else:
+#         return True  # destination is empty
+
+
 def repeat_code():
     global seleced_piece  
     seleced_piece = int(input('choose piece = '))
