@@ -301,3 +301,57 @@ def is_valid_move_queen(row, col):
     
     # all checks passed, the move is valid
     return True
+
+def is_valid_move_queen(row, col):
+    # check if the selected piece is a queen
+    if piece_category[seleced_piece] != 3:
+        return False
+    
+    # check if the destination is within the board
+    if not (0 <= row < size_board and 0 <= col < size_board):
+        return False
+    
+    # get the current position of the selected piece
+    current_row, current_col = locations[seleced_piece]
+    
+    # check if the destination is the same as the current position
+    if (row, col) == (current_row, current_col):
+        return False
+    
+    # check if the move is horizontal, vertical, or diagonal
+    if row != current_row and col != current_col and abs(row - current_row) != abs(col - current_col):
+        return False
+    
+    # check if there are any pieces in the way
+    if row == current_row:
+        # horizontal move
+        start, end = min(current_col, col), max(current_col, col)
+        for i in range(start + 1, end):
+            if is_piece(row, i):
+                return False
+    elif col == current_col:
+        # vertical move
+        start, end = min(current_row, row), max(current_row, row)
+        for i in range(start + 1, end):
+            if is_piece(i, col):
+                return False
+    else:
+        # diagonal move
+        dx, dy = 1 if row > current_row else -1, 1 if col > current_col else -1
+        i, j = current_row + dx, current_col + dy
+        while (i, j) != (row, col):
+            if is_piece(i, j):
+                return False
+            i += dx
+            j += dy
+    
+    # check if the destination is occupied by an opponent's piece
+    if is_piece(row, col):
+        piece_id = is_piece(row, col)
+        if piece_category[piece_id] != 6 and piece_id <= 16 and piece_id >= 9:
+            return False
+        elif piece_category[piece_id] != 6 and piece_id <= 32 and piece_id >= 25:
+            return False
+    
+    # all checks passed, the move is valid
+    return True
