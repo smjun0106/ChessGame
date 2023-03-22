@@ -149,38 +149,7 @@ def is_valid_move_bishop(row, col):
     else:
         return True  # destination is empty
 
-def is_valid_move_rook(row, col):
-    current_row, current_col = locations[seleced_piece]
-    # check if move is backward, forward, and side  
-    if row != current_row and col != current_col:
-        return False 
-
-    # vertical = False or horizontal = True
-    direction = False if row != current_row else True
-
-    # check if path is clear
-    if direction: # horizontal movement
-        row_step = 1 if row > current_row else -1
-        i = current_row + row_step
-        while i != row:
-            if is_piece(i, col):
-                return False  # path is not clear
-            i += row_step   
-    else: # vertical movement 
-        col_step = 1 if col > current_col else -1
-        j = current_col + col_step
-        while j != col:
-            if is_piece(row, j):
-                return False  # path is not clear
-            j += col_step    
  
-    # check if destination is empty or occupied by an enemy piece
-    if is_piece(row, col):
-        return not check_same_team(seleced_piece, is_piece(row, col))
-    else:
-        return True  # destination is empty
-
-
 def repeat_code():
     global seleced_piece  
     seleced_piece = int(input('choose piece = '))
@@ -217,7 +186,6 @@ def repeat_code():
 
 repeat_code()
 
-------------------------------------------------------------------------
 def is_valid_move_rook(row, col):
     current_row, current_col = locations[seleced_piece]
     
