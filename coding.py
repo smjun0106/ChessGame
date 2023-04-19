@@ -1,5 +1,4 @@
-# Homework: Fix the pawn bug
-
+# Homework: only sected turn's team should move. Make a rule for this. 
 size_board = 8
 board = [] 
 count = ' '
@@ -33,14 +32,21 @@ alive_pieces = {key: True for key in range(1, 33)}
 locations = {
     1: (6,0), 2: (6,1), 3: (6,2), 4: (6,3), 5: (6,4), 6: (6,5), 7: (6,6), 8: (6,7),
     9: (7,0), 10: (7,1), 11: (7,2), 12: (7,3), 13: (7,4), 14: (7,5), 15: (7,6), 16: (7,7),
-    17: (5,1), 18: (1,1), 19: (1,2), 20: (1,3), 21: (1,4), 22: (1,5), 23: (1,6), 24: (1,7),
+    17: (1,0), 18: (1,1), 19: (1,2), 20: (1,3), 21: (1,4), 22: (1,5), 23: (1,6), 24: (1,7),
     25: (0,0), 26: (0,1), 27: (0,2), 28: (0,3), 29: (0,4), 30: (0,5), 31: (0,6), 32: (0,7),
 } 
- 
-# Type a code for the rule for pawn 
-seleced_piece = 10  
- 
 
+# global variable 
+is_white_turn = True
+
+def switch_turn():
+    global is_white_turn
+
+    if is_white_turn:
+        is_white_turn = False
+    else:
+        is_white_turn = True 
+  
 def is_piece(row, col):
     for id, value in locations.items():
         if (row, col) == value:
@@ -50,6 +56,7 @@ def is_piece(row, col):
 
 def remove_piece(piece):
     board[locations[piece][0]][locations[piece][1]] = '[]'
+    locations[piece] = (int(-1), int(-1))
 
 def check_for_killed_piece(row, col):
     killed_id = is_piece(row, col)
@@ -67,8 +74,10 @@ def put_pieces():
         if alive_pieces[p] == True: 
             board[locations[p][0]][locations[p][1]] = pieces[p]
 
-move_piece(3, 4)
  
+# Type a code for the rule for pawn 
+# seleced_piece = 13   
+# move_piece(4, 3) 
 put_pieces()
    
 def print_board():
@@ -77,7 +86,7 @@ def print_board():
     
     print_killed_pieces()
 
-# ['1','2']
+ 
 def print_killed_pieces():
     line_size = 50 
 
@@ -90,7 +99,8 @@ def print_killed_pieces():
            
 # Print board
 print_board()
- 
+
+#=======================================================
 def is_valid_move_knight(row, col):
     for i in range(-2,3):
         for j in range(-2,3): 
@@ -99,14 +109,14 @@ def is_valid_move_knight(row, col):
                     return True
     return False
   
-
+#=======================================================
 def is_valid_move_pawn(row, col):    
     if locations[seleced_piece][0] == 6:
         if (row == locations[seleced_piece][0] - 1 and col == locations[seleced_piece][1]) \
             or (row == locations[seleced_piece][0] - 2 and col == locations[seleced_piece][1]):
-            return not check_same_team(seleced_piece, is_piece(row, col))
+            return is_piece(row, col) == False  
     elif row == locations[seleced_piece][0] - 1 and col == locations[seleced_piece][1]:
-            return not check_same_team(seleced_piece, is_piece(row, col))
+            return is_piece(row, col) == False 
     
     if (row == locations[seleced_piece][0] - 1 and col == locations[seleced_piece][1] + 1) or \
         (row == locations[seleced_piece][0] - 1 and col == locations[seleced_piece][1] - 1):
@@ -125,6 +135,8 @@ def check_same_team(id1, id2):
     
     return False
 
+#=======================================================
+# bishop
 def is_valid_move_bishop(row, col):
     current_row, current_col = locations[seleced_piece]
     # check if move is diagonal
@@ -148,74 +160,8 @@ def is_valid_move_bishop(row, col):
     else:
         return True  # destination is empty
 
-# def is_valid_move_rook(row, col):
-#     current_row, current_col = locations[seleced_piece]
-#     # check if move is backward, forward, and side  
-#     if row != current_row and col != current_col:
-#         return False 
-
-#     # vertical = False or horizontal = True
-#     direction = False if row != current_row else True
-
-#     # check if path is clear
-#     if direction: # horizontal movement
-#         row_step = 1 if row > current_row else -1
-#         i = current_row + row_step
-#         while i != row:
-#             if is_piece(i, col):
-#                 return False  # path is not clear
-#             i += row_step   
-#     else: # vertical movement 
-#         col_step = 1 if col > current_col else -1
-#         j = current_col + col_step
-#         while j != col:
-#             if is_piece(row, j):
-#                 return False  # path is not clear
-#             j += col_step    
- 
-#     # check if destination is empty or occupied by an enemy piece
-#     if is_piece(row, col):
-#         return not check_same_team(seleced_piece, is_piece(row, col))
-#     else:
-#         return True  # destination is empty
-
-
-def repeat_code():
-    global seleced_piece  
-    seleced_piece = int(input('choose piece = '))
-    row = int(input('row = '))
-    col = int(input('col = '))
-    
-    pieces_str = pieces_type[piece_category[seleced_piece]] 
-
-    match pieces_str:
-        case 'knight':
-            func = is_valid_move_knight
-        case 'pawn':
-            func = is_valid_move_pawn
-        case 'bishop':
-            func = is_valid_move_bishop
-        case 'rook':
-            func = is_valid_move_rook
-        case 'queen':
-            pass
-        case 'king':
-            pass
- 
-    if func(row, col):
-        if check_for_killed_piece(row, col):
-            print('Piece killed!')
-        remove_piece(seleced_piece)
-        move_piece(row, col)
-        put_pieces()
-        print_board()
-        repeat_code()
-    else:
-        print('Invalid move, please try again')
-        repeat_code()
-
-repeat_code()
-
+#======================================================= 
+# rook
 def is_valid_move_rook(row, col):
     current_row, current_col = locations[seleced_piece]
     
@@ -233,19 +179,17 @@ def is_valid_move_rook(row, col):
             for r in range(current_row + direction, row, direction):
                 if is_piece(r, col):
                     return False
-                    
-        # Check if there is a piece at the destination, if yes check if it is an opponent's piece
+                            
+        # check if the destination is occupied by an opponent's piecenb
         if is_piece(row, col):
-            piece_type = piece_category[is_piece(row, col)]
-            if piece_type == 1 and locations[is_piece(row, col)][0] != current_row:
-                return False
-            elif piece_type != 1:
-                return False
-                
-        return True
+            return not check_same_team(seleced_piece, is_piece(row, col))
+        else:
+            return True  # destination is empty
     
     return False
 
+#=======================================================  
+# queen
 def is_valid_move_queen(row, col):
     # check if the selected piece is a queen
     if piece_category[seleced_piece] != 3:
@@ -289,13 +233,88 @@ def is_valid_move_queen(row, col):
             i += dx
             j += dy
     
-    # check if the destination is occupied by an opponent's piece
+    # check if the destination is occupied by an opponent's piecenb
     if is_piece(row, col):
-        piece_id = is_piece(row, col)
-        if piece_category[piece_id] != 6 and piece_id <= 16 and piece_id >= 9:
-            return False
-        elif piece_category[piece_id] != 6 and piece_id <= 32 and piece_id >= 25:
-            return False
-    
+        return not check_same_team(seleced_piece, is_piece(row, col))
+    else:
+        return True  # destination is empty
+
     # all checks passed, the move is valid
     return True
+
+#======================================================= 
+# king
+def is_valid_move_king(row, col):
+    # check if the selected piece is a king
+    if piece_category[seleced_piece] != 4:
+        return False
+    
+    # check if the destination is within the board
+    if not (0 <= row < size_board and 0 <= col < size_board):
+        return False
+    
+    # get the current position of the selected piece
+    current_row, current_col = locations[seleced_piece]
+    
+    # check if the destination is the same as the current position
+    if (row, col) == (current_row, current_col):
+        return False
+    
+    # check if the move is horizontal, vertical, or diagonal
+    if row != current_row and col != current_col and abs(row - current_row) != abs(col - current_col):
+        return False
+
+    diff_row, diff_col = abs(current_row - row), abs(current_col - col)
+    if diff_row > 1 or diff_col > 1:   
+        return False      
+
+    # check if the destination is occupied by an opponent's piecenb
+    if is_piece(row, col):
+        return not check_same_team(seleced_piece, is_piece(row, col))
+    else:
+        return True  # destination is empty
+
+    # all checks passed, the move is valid
+    return True
+
+#=======================================================================
+#  Main 
+def repeat_code():
+    global seleced_piece  
+    
+    print('current turn:', 'white' if is_white_turn else 'black')
+
+    seleced_piece = int(input('choose piece = '))
+    row = int(input('row = '))
+    col = int(input('col = '))
+    
+    pieces_str = pieces_type[piece_category[seleced_piece]] 
+
+    match pieces_str:
+        case 'knight':
+            func = is_valid_move_knight
+        case 'pawn':
+            func = is_valid_move_pawn
+        case 'bishop':
+            func = is_valid_move_bishop
+        case 'rook':
+            func = is_valid_move_rook
+        case 'queen':
+            func = is_valid_move_queen
+        case 'king':
+            func = is_valid_move_king
+ 
+    if func(row, col):
+        if check_for_killed_piece(row, col):
+            print('Piece killed!')
+        remove_piece(seleced_piece)
+        move_piece(row, col)
+        put_pieces()
+        print_board()
+        switch_turn()
+        repeat_code()
+    else:
+        print('Invalid move, please try again')
+        repeat_code()
+
+repeat_code()
