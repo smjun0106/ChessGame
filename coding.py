@@ -45,8 +45,14 @@ def switch_turn():
     if is_white_turn:
         is_white_turn = False
     else:
-        is_white_turn = True 
-  
+        is_white_turn = True
+
+def switch_turn_pieces():
+    if (is_white_turn and locations in range (1, 17)) or (not is_white_turn and locations not in range (1,17)):
+        return True
+    else:
+        return False
+    
 def is_piece(row, col):
     for id, value in locations.items():
         if (row, col) == value:
@@ -305,14 +311,18 @@ def repeat_code():
             func = is_valid_move_king
  
     if func(row, col):
-        if check_for_killed_piece(row, col):
-            print('Piece killed!')
-        remove_piece(seleced_piece)
-        move_piece(row, col)
-        put_pieces()
-        print_board()
-        switch_turn()
-        repeat_code()
+        if switch_turn_pieces():
+            print ('Invalid move, please try again')
+            repeat_code()
+        else:
+            if check_for_killed_piece(row, col):
+                print('Piece killed!')
+            remove_piece(seleced_piece)
+            move_piece(row, col)
+            put_pieces()
+            print_board()
+            switch_turn()
+            repeat_code()
     else:
         print('Invalid move, please try again')
         repeat_code()
