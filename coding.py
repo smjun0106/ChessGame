@@ -1,4 +1,3 @@
-# Homework: only selected turn's team should move. Make a rule for this. 
 size_board = 8
 board = [] 
 count = ' '
